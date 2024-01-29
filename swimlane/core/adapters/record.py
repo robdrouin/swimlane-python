@@ -119,12 +119,11 @@ class RecordAdapter(AppResolver):
         columns = kwargs.pop('columns', None)
         if columns:
             report.set_columns(*columns)
-        
-        report.filter_type(filter_type)     
+
+        report.filter_type(filter_type)
 
         return list(report)
-    
-  
+
     def create(self, **fields):
         """Create and return a new record in associated app and return the newly created Record instance
 
@@ -165,6 +164,7 @@ class RecordAdapter(AppResolver):
             swimlane.exceptions.ValidationError: If any field fails validation before creation
         """
         new_record = record_factory(self._app, fields)
+        new_record.validate()
 
         new_record.save()
 
@@ -359,11 +359,6 @@ class RecordAdapter(AppResolver):
                     record[field_name] = modification_operation.value
 
         return response.text
-
-
-
-
-
 
     @requires_swimlane_version('2.17')
     def bulk_delete(self, *filters_or_records_or_ids):
